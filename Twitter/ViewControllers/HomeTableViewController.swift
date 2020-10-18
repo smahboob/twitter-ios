@@ -23,6 +23,12 @@ class HomeTableViewController: UITableViewController {
         tableView.refreshControl = myRefresh
     }
     
+    //load tweets again after u return from tweeting
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.loadTweets()
+    }
+    
     @IBAction func logoutButton(_ sender: Any) {
         TwitterAPICaller.client?.logout()
         UserDefaults.standard.setValue(false, forKey: "loggedIn")
@@ -93,10 +99,16 @@ class HomeTableViewController: UITableViewController {
         
         let user = tweetsArray[indexPath.row]["user"] as! NSDictionary
         let cell = tableView.dequeueReusableCell(withIdentifier: "tweetCell", for: indexPath) as! TweetCell
+        let date = (user["created_at"] as! String)
+        let range = date.index(date.startIndex, offsetBy: 0)..<date.index(date.endIndex, offsetBy: -19)
+        
+        let finalDate = date[range]
+        var dateString = ""
+        dateString.append(contentsOf: finalDate)
         
         cell.tweetContent.text = (tweetsArray[indexPath.row]["text"] as! String)
         cell.userName.text = (user["name"] as! String)
-        
+        cell.dateLabel.text = dateString
         
         let imageURL = URL(string: (user["profile_image_url_https"] as! String))
         let data = try? Data(contentsOf: imageURL!)
