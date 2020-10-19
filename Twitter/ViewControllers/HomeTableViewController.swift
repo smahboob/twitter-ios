@@ -21,6 +21,8 @@ class HomeTableViewController: UITableViewController {
         //pull down to load tweets again
         myRefresh.addTarget(self, action: #selector(loadTweets), for: .valueChanged)
         tableView.refreshControl = myRefresh
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 150
     }
     
     //load tweets again after u return from tweeting
@@ -117,6 +119,11 @@ class HomeTableViewController: UITableViewController {
             cell.profileImage.image = UIImage(data: imageData)
         }
         
+        cell.setLike(tweetsArray[indexPath.row]["favorited"] as! Bool )
+        cell.tweetId = tweetsArray[indexPath.row]["id"] as! Int
+        //cell.retweeted = tweetsArray[indexPath.row]["retweeted"] as! Bool
+        cell.setRetweeted(tweetsArray[indexPath.row]["retweeted"] as! Bool )
+
         return cell
     }
 
